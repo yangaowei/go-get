@@ -30,3 +30,24 @@ func TestQuery(t *testing.T) {
 	})
 
 }
+
+func TestFindAll(t *testing.T) {
+	content := FindAll("abcd([0-9]+)", "abcd1234asdfadfdadf123123afaf1212")
+	log.Println("TestFindAll:", content)
+}
+
+func TestFindSubAll(t *testing.T) {
+	content := FindSubAll("abcd([0-9]+)", "abcd1234asdfadfdadf123123afaf1212")
+	log.Println("FindSubAll:", content)
+}
+
+func TestR1(t *testing.T) {
+	content := R1("abcddd([0-9]+)", "abcd1234asdfadfdadf123123afaf1212")
+	log.Println("TestR1:", content, "len:", len(content))
+}
+
+func TestR1of(t *testing.T) {
+	patterns := []string{"abcd([0-9]+)"}
+	content := R1Of(patterns, "abcd1234asdfadfdadf123123afaf1212")
+	log.Println("TestR1of:", content, "len:", len(content))
+}
