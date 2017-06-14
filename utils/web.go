@@ -2,8 +2,10 @@ package utils
 
 import (
 	"./surfer"
+	"encoding/json"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"regexp"
 )
 
@@ -20,6 +22,23 @@ func GetHtml(req surfer.Request) (resp string, err error) {
 		err = e
 	}
 	return resp, err
+}
+
+func GetContent(url string, data map[string]interface{}) (resp string, err error) {
+	request := &surfer.DefaultRequest{Url: url, TryTimes: 1}
+	request.GetUrl()
+	return GetHtml(request)
+}
+
+func Urlopen(url string) (req surfer.Request, resp *http.Response) {
+	down := surfer.New()
+	request := &surfer.DefaultRequest{Url: url, TryTimes: 1}
+	request.GetUrl()
+	response, e := down.Download(request)
+	if e != nil {
+		return
+	}
+	return request, response
 }
 
 //正则表达式相关内容
@@ -65,4 +84,25 @@ func FindAll(pattern string, content string) (rcontent []string) {
 	re, _ := regexp.Compile(pattern)
 	rcontent = re.FindAllString(content, 100)
 	return
+}
+
+//json
+
+func Loads(sjson string) (result map[string]interface{}) {
+	var f interface{}
+	err := json.Unmarshal([]byte(sjson), &f)
+	if err != nil {
+		log.Println("error:", err)
+	}
+	result = f.(map[string]interface{})
+	return
+}
+
+func FJson(obj interface{}) {
+	sjson, err := json.MarshalIndent(obj, "", "\t")
+	if err == nil {
+		log.Println("\n", string(sjson))
+	} else {
+		log.Println(err)
+	}
 }

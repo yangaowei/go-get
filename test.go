@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"./extractors"
+	"./extractors"
 	"fmt"
 )
 
@@ -37,7 +37,12 @@ func main() {
 	// fmt.Println(base)
 	// base = Base{"test"}
 	// base.less()
-	Spiders["test"] = Student{}
-	fmt.Println(Spiders)
-	Spiders["test"].GetVideoInfo("url")
+	// Spiders["test"] = Student{}
+	// fmt.Println(Spiders)
+	// Spiders["test"].GetVideoInfo("url")
+
+	youku := extractors.Spiders["youku"]
+	fmt.Println(youku)
+	fmt.Println(youku.Obj())
+
 }

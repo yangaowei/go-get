@@ -51,3 +51,9 @@ func TestR1of(t *testing.T) {
 	content := R1Of(patterns, "abcd1234asdfadfdadf123123afaf1212")
 	log.Println("TestR1of:", content, "len:", len(content))
 }
+
+func TestLoads(t *testing.T) {
+	result := Loads(`{"a":1}`)
+	log.Println(result)
+	log.Println(result["a"])
+}
