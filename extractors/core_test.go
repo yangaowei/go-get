@@ -23,3 +23,20 @@ func TestYoukuGetVideoInfo(t *testing.T) {
 		log.Println(err)
 	}
 }
+
+func TestQQGetVideoInfo(t *testing.T) {
+	//YouKuRegister()
+	ie := Spiders["qq"]
+	log.Println(ie, "Ie")
+	if videoInfo, err := ie.GetVideoInfo("http://v.qq.com/page/z/7/k/z0389i9cj7k.html"); err == nil {
+		//log.Println(videoInfo)
+		info := videoInfo.dumps()
+		//log.Println(info)
+		//utils.FJson(info)
+		b, _ := json.Marshal(info)
+		log.Println(string(b))
+
+	} else {
+		log.Println(err)
+	}
+}

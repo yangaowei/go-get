@@ -62,6 +62,7 @@ var (
 
 func init() {
 	YouKuRegister()
+	QQRegister()
 }
 
 func GetExtractor(url string) (extractor Core) {
