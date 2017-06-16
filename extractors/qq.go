@@ -22,7 +22,7 @@ type QQ struct {
 func QQRegister() {
 	qq := new(QQ)
 	qq.Name = "qq"
-	qq._VIDEO_PATTERNS = []string{`v\.qq\.com/page/\w/\w/\w/(\w+)\.html`}
+	qq._VIDEO_PATTERNS = []string{`v\.qq\.com/page/\w/\w/\w/(\w+)\.html`, `v\.qq\.com/\w/cover/\w{15}/(\w+)\.html`}
 	Spiders[qq.Name] = qq
 	//fmt.Println(youku.Name)
 }
@@ -43,8 +43,7 @@ func (self *QQ) GetVideoInfo(url string) (info VideoInfo, err error) {
 	vid := utils.R1Of(self._VIDEO_PATTERNS, url)
 	log.Println("vid: ", vid)
 	api_url := "https://h5vv.video.qq.com/getinfo?callback=&charge=0&vid=" + vid + "&defaultfmt=auto&otype=json&guid=&platform=11001&defnpayver=0&appVer=3.0.16&sdtfrom=v3010&host=m.v.qq.coms&defn=auto&fhdswitch=0&show1080p=0&isHLS=0&fmt=auto&newplatform=11001"
-	data := make(map[string]interface{})
-	html, gerr := utils.GetContent(api_url, data)
+	html, gerr := utils.GetContent(api_url, nil)
 	if gerr != nil {
 		return info, gerr
 	}

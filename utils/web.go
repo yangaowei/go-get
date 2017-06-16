@@ -25,7 +25,7 @@ func GetHtml(req surfer.Request) (resp string, err error) {
 }
 
 func GetContent(url string, data map[string]interface{}) (resp string, err error) {
-	request := &surfer.DefaultRequest{Url: url, TryTimes: 1}
+	request := &surfer.DefaultRequest{Url: url, TryTimes: 3}
 	request.GetUrl()
 	return GetHtml(request)
 }
