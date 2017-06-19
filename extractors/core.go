@@ -1,7 +1,9 @@
 package extractors
 
 import (
+	"../utils"
 	"github.com/PuerkitoBio/goquery"
+	simplejson "github.com/bitly/go-simplejson"
 	"log"
 	"strings"
 	"time"
@@ -56,6 +58,13 @@ func (base *Base) BuildDoc(url string) (doc *goquery.Document, err error) {
 	return
 }
 
+func (base *Base) BuildJson(url string) (json *simplejson.Json, err error) {
+	video_html, err := utils.GetContent(url, nil)
+	bjson := []byte(video_html)
+	json, err = simplejson.NewJson(bjson)
+	return
+}
+
 var (
 	Spiders = make(map[string]Core)
 )
@@ -64,6 +73,7 @@ func init() {
 	YouKuRegister()
 	QQRegister()
 	IQiyiRegister()
+	SohuRegister()
 }
 
 func GetExtractor(url string) (extractor Core) {
