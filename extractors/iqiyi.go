@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	simplejson "github.com/bitly/go-simplejson"
 	"io/ioutil"
-	"log"
+	//"log"
 	"net/http"
 	"strconv"
 	//"strings"
@@ -18,25 +18,22 @@ import (
 
 type IQiyi struct {
 	Base
-	Name            string
-	_VIDEO_PATTERNS []string
-	vid             string
-	Hd              map[int]string
+	vid string
 }
 
 func IQiyiRegister() {
 	iqiyi := new(IQiyi)
 	iqiyi.Name = "iqiyi"
-	iqiyi._VIDEO_PATTERNS = []string{}
+	iqiyi._VIDEO_PATTERNS = []string{`www\.iqiyi\.com/v_(\w+)\.html`}
 	Spiders[iqiyi.Name] = iqiyi
-	iqiyi.Hd = make(map[int]string)
+	iqiyi.Hd = make(map[string]string)
 	//{1: 'normal', 2: 'hd1', 3: 'hd2', 4: 'hd3', 5: 'hd4', 96: 'low'}
-	iqiyi.Hd[1] = "normal"
-	iqiyi.Hd[4] = "hd3"
-	iqiyi.Hd[3] = "hd2"
-	iqiyi.Hd[5] = "hd4"
-	iqiyi.Hd[96] = "low"
-	iqiyi.Hd[2] = "hd1"
+	iqiyi.Hd["1"] = "normal"
+	iqiyi.Hd["4"] = "hd3"
+	iqiyi.Hd["3"] = "hd2"
+	iqiyi.Hd["5"] = "hd4"
+	iqiyi.Hd["96"] = "low"
+	iqiyi.Hd["2"] = "hd1"
 	//fmt.Println(youku.Name)
 }
 
@@ -63,7 +60,7 @@ func getVf(url_params string) (vf string) {
 			sufix += fmt.Sprintf("%c", rune(v8))
 		}
 	}
-	log.Println(sufix)
+	//log.Println(sufix)
 	url_params += sufix
 	h := md5.New()
 	h.Write([]byte(url_params))
@@ -129,7 +126,7 @@ func (self *IQiyi) GetVideoInfo(url string) (info VideoInfo, err error) {
 			}
 			tmp := make(map[string][]string)
 			tmp["urls"] = urls
-			streamTypes[self.Hd[bid]] = tmp
+			streamTypes[self.Hd[strconv.Itoa(bid)]] = tmp
 		}
 	} else {
 		panic("can't play this video")

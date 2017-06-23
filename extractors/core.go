@@ -10,16 +10,17 @@ import (
 )
 
 type VideoInfo struct {
-	title        string
-	url          string
-	duration     int64
-	downloadInfo map[string]interface{}
+	title        string                 `json:"title"`
+	url          string                 `json:"url"`
+	duration     int64                  `json:"duration"`
+	downloadInfo map[string]interface{} `json:"downloadInfo"`
 }
 
 type Core interface {
 	GetVideoInfo(url string) (info VideoInfo, err error)
 	GetHtml(url string) (html string, err error)
 	Obj() (obj interface{})
+	MatchUrl(url string) bool
 }
 
 func (self *VideoInfo) dumps() (info map[string]interface{}) {
@@ -28,11 +29,19 @@ func (self *VideoInfo) dumps() (info map[string]interface{}) {
 	info["url"] = self.url
 	info["duration"] = self.duration
 	info["downloadInfo"] = self.downloadInfo
+	info["desc"] = "normal 表示标清，hd1 表示高清，hd2 表示超清，hd3 表示720p hd4 表示1080p"
 	return info
+}
+
+func (self *VideoInfo) Dumps() (info map[string]interface{}) {
+	return self.dumps()
 }
 
 //实例基类
 type Base struct {
+	Name            string
+	_VIDEO_PATTERNS []string
+	Hd              map[string]string
 }
 
 func (base *Base) CurrentTime() (ts int64) {
@@ -50,6 +59,13 @@ func (base *Base) GetHtml(url string) (html string, err error) {
 
 func (base *Base) Obj() (obj interface{}) {
 	return base
+}
+
+func (self *Base) MatchUrl(url string) bool {
+	if len(utils.R1Of(self._VIDEO_PATTERNS, url)) > 1 {
+		return true
+	}
+	return false
 }
 
 func (base *Base) BuildDoc(url string) (doc *goquery.Document, err error) {

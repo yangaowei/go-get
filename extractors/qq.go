@@ -13,10 +13,7 @@ import (
 
 type QQ struct {
 	Base
-	Name            string
-	_VIDEO_PATTERNS []string
-	vid             string
-	Hd              map[string]string
+	vid string
 }
 
 func QQRegister() {

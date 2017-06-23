@@ -10,16 +10,13 @@ import (
 
 type Sohu struct {
 	Base
-	Name            string
-	_VIDEO_PATTERNS []string
-	vid             string
-	Hd              map[string]string
+	vid string
 }
 
 func SohuRegister() {
 	sohu := new(Sohu)
 	sohu.Name = "sohu"
-	sohu._VIDEO_PATTERNS = []string{}
+	sohu._VIDEO_PATTERNS = []string{`my.tv.sohu.com\/pl\/\d+/(\d+)\.shtml`}
 	Spiders[sohu.Name] = sohu
 
 	sohu.Hd = make(map[string]string)

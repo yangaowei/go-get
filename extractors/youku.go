@@ -13,10 +13,7 @@ import (
 
 type YouKu struct {
 	Base
-	Name            string
-	_VIDEO_PATTERNS []string
-	vid             string
-	Hd              map[string]string
+	vid string
 }
 
 func YouKuRegister() {
