@@ -4,6 +4,7 @@ import (
 	"../utils"
 	"encoding/json"
 	"log"
+	"os"
 	"testing"
 )
 
@@ -72,5 +73,29 @@ func TestIqSohuGetVideoInfo(t *testing.T) {
 
 	} else {
 		log.Println(err)
+	}
+}
+
+func TestBaseGetVideoInfo(t *testing.T) {
+	var url string
+	url = os.Args[1]
+
+	log.Println("url:", url)
+	log.Println(os.Args)
+	var key string
+	var spider Core
+	for a, b := range Spiders {
+		if b.MatchUrl(url) {
+			key = a
+			spider = b
+			break
+		}
+	}
+	log.Println("get IE ", key)
+	if len(key) == 0 {
+		log.Println("暂不支持该站点")
+	} else {
+		info, _ := spider.GetVideoInfo(url)
+		log.Println(info.Dumps())
 	}
 }
