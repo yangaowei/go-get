@@ -40,13 +40,17 @@ func DownloadUrls(urls []string, ext string, info map[string]string) (vfile stri
 	title := info["title"]
 	vfile = title + "." + ext
 	if len(urls) == 1 {
-		UrlSave(vfile, urls[0])
+		vfile = UrlSave(vfile, urls[0])
 	} else {
 		var vfiles []string
 		for index, url := range urls {
 			f := fmt.Sprintf("%s_%d.%s", title, index, ext)
 			vf := UrlSave(f, url)
-			vfiles = append(vfiles, vf)
+			if len(vf) > 0 {
+				vfiles = append(vfiles, vf)
+			} else {
+				panic(fmt.Sprintf("download %s fail", f))
+			}
 		}
 	}
 	return
