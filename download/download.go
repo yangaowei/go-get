@@ -1,7 +1,9 @@
 package download
 
 import (
+	"../converter"
 	"../utils"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -16,6 +18,7 @@ func UrlSave(vfile, url string) (result string) {
 		}
 		//resp.Body.close()
 	}()
+	log.Println("downloading ", vfile)
 	for i := 0; i < 3; i++ {
 		_, resp := utils.Urlopen(url)
 		contentLength, _ := strconv.ParseInt(resp.Header["Content-Length"][0], 10, 64)
@@ -50,6 +53,21 @@ func DownloadUrls(urls []string, ext string, info map[string]string) (vfile stri
 				vfiles = append(vfiles, vf)
 			} else {
 				panic(fmt.Sprintf("download %s fail", f))
+			}
+		}
+		if len(vfiles) == len(urls) {
+			options := map[string]interface{}{"format": "mp4"}
+			audio := map[string]string{"codec": "copy"}
+			options["audio"] = audio
+			video := map[string]string{"codec": "copy", "faststart": "true"}
+			options["video"] = video
+			conv := converter.FFMpeg{}
+			result := conv.Merge(vfiles, vfile, options)
+			if !result {
+				err = errors.New("Merge videos error")
+			}
+			for _, vfile := range vfiles {
+				os.Remove(vfile)
 			}
 		}
 	}
