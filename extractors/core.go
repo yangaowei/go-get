@@ -29,12 +29,14 @@ func (self *VideoInfo) dumps() (info map[string]interface{}) {
 	info["url"] = self.url
 	info["duration"] = self.duration
 	info["downloadInfo"] = self.downloadInfo
-	info["desc"] = "normal 表示标清，hd1 表示高清，hd2 表示超清，hd3 表示720p hd4 表示1080p"
+
 	return info
 }
 
 func (self *VideoInfo) Dumps() (info map[string]interface{}) {
-	return self.dumps()
+	info = self.dumps()
+	info["desc"] = "normal 表示标清，hd1 表示高清，hd2 表示超清，hd3 表示720p hd4 表示1080p"
+	return
 }
 
 //实例基类
@@ -90,6 +92,7 @@ func init() {
 	QQRegister()
 	IQiyiRegister()
 	SohuRegister()
+	LeTvRegister()
 }
 
 func GetExtractor(url string) (extractor Core) {

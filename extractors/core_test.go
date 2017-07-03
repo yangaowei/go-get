@@ -76,6 +76,23 @@ func TestIqSohuGetVideoInfo(t *testing.T) {
 	}
 }
 
+func TestIqLeTvGetVideoInfo(t *testing.T) {
+	//YouKuRegister()
+	ie := Spiders["letv"]
+	log.Println(ie, "Ie")
+	if videoInfo, err := ie.GetVideoInfo("http://www.le.com/ptv/vplay/30105085.html"); err == nil {
+		//log.Println(videoInfo)
+		info := videoInfo.dumps()
+		log.Println(info)
+		utils.FJson(info)
+		// b, _ := json.Marshal(info)
+		// log.Println(string(b))
+
+	} else {
+		log.Println(err)
+	}
+}
+
 func TestBaseGetVideoInfo(t *testing.T) {
 	var url string
 	url = os.Args[1]
