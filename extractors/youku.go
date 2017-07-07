@@ -6,6 +6,7 @@ import (
 	//"log"
 	//"reflect"
 	"encoding/json"
+	"errors"
 	simplejson "github.com/bitly/go-simplejson"
 	"strconv"
 	"strings"
@@ -64,52 +65,58 @@ func (self *YouKu) GetVideoInfo(url string) (info VideoInfo, err error) {
 	//log.Println("vid:", vid)
 	self.vid = vid
 	//cna := fetch_cna()
-	api_url := fmt.Sprintf("https://ups.youku.com/ups/get.json?vid=%s&ccode=%s&client_ip=192.168.1.1&utid=%s&client_ts=%d", self.vid, "0401", fetch_cna(), self.CurrentTime())
-	data := make(map[string]interface{})
-	html, gerr := utils.GetContent(api_url, data)
-	if gerr != nil {
-		return info, gerr
-	}
-	bjson := []byte(html)
-	videoInfo, err := simplejson.NewJson(bjson)
-	if err != nil {
-		return
-	}
-	streams, _ := videoInfo.Get("data").Get("stream").Array()
-	var duration int64
-	//var title string
-	stringsHd := make(map[string]interface{})
-	for _, stream := range streams {
-		tmp := make(map[string]interface{})
-		if m, ok := (stream).(map[string]interface{}); ok {
-			hd := (m["stream_type"]).(string)
-			if v, ok := self.Hd[hd]; ok {
-				hd = v
-			}
-			tmp["m3u8_url"] = m["m3u8_url"]
-			//duration = (m["milliseconds_video"]).(int64)
-			n := (m["milliseconds_video"]).(json.Number)
-			duration, _ = strconv.ParseInt(string(n), 10, 64)
-			segs, _ := (m["segs"]).([]interface{})
-			urls := []string{}
-			for _, seg := range segs {
-				s, _ := (seg).(map[string]interface{})
-				urls = append(urls, (s["cdn_url"]).(string))
-				//fmt.Println(s["cdn_url"])
-			}
-			tmp["urls"] = urls
-			stringsHd[hd] = tmp
+	for i := 0; i < 3; i++ {
+		api_url := fmt.Sprintf("https://ups.youku.com/ups/get.json?vid=%s&ccode=%s&client_ip=192.168.1.1&utid=%s&client_ts=%d", self.vid, "0401", fetch_cna(), self.CurrentTime())
+		data := make(map[string]interface{})
+		html, gerr := utils.GetContent(api_url, data)
+		if gerr != nil {
+			return info, gerr
 		}
-		//break
+		bjson := []byte(html)
+		videoInfo, serr := simplejson.NewJson(bjson)
+		if serr != nil {
+			return info, serr
+		}
+		streams, _ := videoInfo.Get("data").Get("stream").Array()
+		var duration int64
+		//var title string
+		stringsHd := make(map[string]interface{})
+		for _, stream := range streams {
+			tmp := make(map[string]interface{})
+			if m, ok := (stream).(map[string]interface{}); ok {
+				hd := (m["stream_type"]).(string)
+				if v, ok := self.Hd[hd]; ok {
+					hd = v
+				}
+				tmp["m3u8_url"] = m["m3u8_url"]
+				//duration = (m["milliseconds_video"]).(int64)
+				n := (m["milliseconds_video"]).(json.Number)
+				duration, _ = strconv.ParseInt(string(n), 10, 64)
+				segs, _ := (m["segs"]).([]interface{})
+				urls := []string{}
+				for _, seg := range segs {
+					s, _ := (seg).(map[string]interface{})
+					urls = append(urls, (s["cdn_url"]).(string))
+					//fmt.Println(s["cdn_url"])
+				}
+				tmp["urls"] = urls
+				stringsHd[hd] = tmp
+			}
+			//break
+		}
+		//utils.FJson(stringsHd)
+		// log.Println(string(sjson))
+		title, _ := videoInfo.Get("data").Get("video").Get("title").String()
+		info.title = title
+		info.url = url
+		info.duration = duration / 1000
+		info.downloadInfo = stringsHd
+		if len(title) > 1 {
+			return
+		}
 	}
-	//utils.FJson(stringsHd)
-	// log.Println(string(sjson))
-	title, _ := videoInfo.Get("data").Get("video").Get("title").String()
-	info.title = title
-	info.url = url
-	info.duration = duration / 1000
-	info.downloadInfo = stringsHd
-	return
+	e := errors.New(fmt.Sprintf("get video info fail with url %s", url))
+	return info, e
 }
 
 func (self *YouKu) Obj() (obj interface{}) {

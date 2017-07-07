@@ -14,7 +14,7 @@ func Cmd(cmds string) (result string) {
 	cmd.Stdout = &domifstat
 	err := cmd.Run()
 	if err != nil {
-		log.Printf("Error while exec cmd %a", err)
+		log.Printf("Error while exec cmd %v", err)
 		return ""
 	}
 	result = domifstat.String()

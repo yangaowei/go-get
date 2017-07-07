@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"../logs"
 	"./surfer"
 	"encoding/json"
 	"io/ioutil"
@@ -10,7 +11,7 @@ import (
 )
 
 func GetHtml(req surfer.Request) (resp string, err error) {
-	log.Println("get html from url ", req.GetUrl())
+	logs.Log.Debug("get html from url %s", req.GetUrl())
 	down := surfer.New()
 	if response, e := down.Download(req); e == nil {
 		defer response.Body.Close()

@@ -1,8 +1,10 @@
 package extractors
 
 import (
+	"../download"
 	"../utils"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -48,9 +50,17 @@ func TestIqiyiGetVideoInfo(t *testing.T) {
 	log.Println(ie, "Ie")
 	if videoInfo, err := ie.GetVideoInfo("http://www.iqiyi.com/v_19rr752q8o.html"); err == nil {
 		//log.Println(videoInfo)
-		info := videoInfo.dumps()
-		log.Println(info)
-		utils.FJson(info)
+		// a := videoInfo.dumps()
+		// utils.FJson(a)
+		for key, value := range videoInfo.downloadInfo {
+			down := (value).(map[string]interface{})
+			log.Println(key, down)
+			urls := (down["urls"]).([]string)
+			log.Println(key, len(urls))
+			info := map[string]string{"title": fmt.Sprintf("%s_%s", videoInfo.title, key)}
+			result, err := download.DownloadUrls(urls, "mp4", info)
+			log.Println(result, err)
+		}
 		// b, _ := json.Marshal(info)
 		// log.Println(string(b))
 
@@ -63,13 +73,21 @@ func TestIqSohuGetVideoInfo(t *testing.T) {
 	//YouKuRegister()
 	ie := Spiders["sohu"]
 	log.Println(ie, "Ie")
-	if videoInfo, err := ie.GetVideoInfo("http://my.tv.sohu.com/pl/9365360/90147443.shtml"); err == nil {
-		//log.Println(videoInfo)
-		info := videoInfo.dumps()
-		log.Println(info)
-		utils.FJson(info)
-		// b, _ := json.Marshal(info)
-		// log.Println(string(b))
+	if videoInfo, err := ie.GetVideoInfo("http://tv.sohu.com/20170706/n600040516.shtml"); err == nil {
+		for key, value := range videoInfo.downloadInfo {
+			if key != "normal" {
+				continue
+			}
+			down := (value).(map[string]interface{})
+			log.Println(key, down)
+			urls := (down["urls"]).([]string)
+			log.Println(key, len(urls))
+			info := map[string]string{"title": fmt.Sprintf("%s_%s", "sohu", key)}
+			result, err := download.DownloadUrls(urls, "mp4", info)
+
+			fmt.Println(result, err)
+			break
+		}
 
 	} else {
 		log.Println(err)

@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func UrlSave(vfile, url string) (result string) {
+func UrlSave(vfile, url string) (result string, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("get video info error: ", err) // 这里的err其实就是panic传入的内容，55
@@ -43,12 +43,12 @@ func DownloadUrls(urls []string, ext string, info map[string]string) (vfile stri
 	title := info["title"]
 	vfile = title + "." + ext
 	if len(urls) == 1 {
-		vfile = UrlSave(vfile, urls[0])
+		vfile, _ = UrlSave(vfile, urls[0])
 	} else {
 		var vfiles []string
 		for index, url := range urls {
 			f := fmt.Sprintf("%s_%d.%s", title, index, ext)
-			vf := UrlSave(f, url)
+			vf, _ := UrlSave(f, url)
 			if len(vf) > 0 {
 				vfiles = append(vfiles, vf)
 			} else {

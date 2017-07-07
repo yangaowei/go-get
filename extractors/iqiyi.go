@@ -124,7 +124,7 @@ func (self *IQiyi) GetVideoInfo(url string) (info VideoInfo, err error) {
 				down_url, _ := data.Get("l").String()
 				urls = append(urls, down_url)
 			}
-			tmp := make(map[string][]string)
+			tmp := make(map[string]interface{})
 			tmp["urls"] = urls
 			streamTypes[self.Hd[strconv.Itoa(bid)]] = tmp
 		}

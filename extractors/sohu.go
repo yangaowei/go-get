@@ -3,8 +3,8 @@ package extractors
 import (
 	"../utils"
 	"fmt"
-	//"strconv"
 	"math/rand"
+	"strconv"
 	"strings"
 )
 
@@ -16,7 +16,8 @@ type Sohu struct {
 func SohuRegister() {
 	sohu := new(Sohu)
 	sohu.Name = "sohu"
-	sohu._VIDEO_PATTERNS = []string{`my.tv.sohu.com\/pl\/\d+/(\d+)\.shtml`}
+	//http://tv.sohu.com/20170706/n600040516.shtml
+	sohu._VIDEO_PATTERNS = []string{`my.tv.sohu.com\/(?:pl|us)\/\d+/(\d+)\.shtml`, `tv.sohu.com\/\d+\/n(\d+).shtml`}
 	Spiders[sohu.Name] = sohu
 
 	sohu.Hd = make(map[string]string)
@@ -57,32 +58,32 @@ func (self *Sohu) GetVideoInfo(url string) (info VideoInfo, err error) {
 
 	streamTypes := make(map[string]interface{})
 	for key, value := range self.Hd {
-		hdvid, _ := videoInfo.Get("data").Get(key).String()
+		hdvid := strconv.Itoa(videoInfo.Get("data").Get(key).MustInt())
 		if hdvid != self.vid {
 			videoInfo, err = self.BuildJson(fmt.Sprintf(apiurl, hdvid))
 			status := videoInfo.Get("status").MustInt64()
 			if status != 1 {
 				continue
 			}
-			host, _ := videoInfo.Get("allot").String()
-			//prot, _ := videoInfo.Get("prot").String()
-			//tvid, _ := videoInfo.Get("tvid").String()
-			su, _ := videoInfo.Get("data").Get("su").Array()
-			clipsURL, _ := videoInfo.Get("data").Get("clipsURL").Array()
-			ck, _ := videoInfo.Get("data").Get("ck").Array()
-			urls := []string{}
-			for index, _ := range su {
-				n := (su[index]).(string)
-				c := (clipsURL[index]).(string)
-				c_k := (ck[index]).(string)
-				t := rand.Float64()
-				url := fmt.Sprintf("http://%s/?prot=9&prod=flash&pt=1&file=%s&new=%s&key=%s&vid=%s&uid=%d&t=%f&rb=1", host, c, n, c_k, self.vid, self.CurrentTime()*1000, t)
-				urls = append(urls, self.realUrl(url))
-			}
-			tmp := make(map[string]interface{})
-			tmp["urls"] = urls
-			streamTypes[value] = tmp
 		}
+		host, _ := videoInfo.Get("allot").String()
+		//prot, _ := videoInfo.Get("prot").String()
+		//tvid, _ := videoInfo.Get("tvid").String()
+		su, _ := videoInfo.Get("data").Get("su").Array()
+		clipsURL, _ := videoInfo.Get("data").Get("clipsURL").Array()
+		ck, _ := videoInfo.Get("data").Get("ck").Array()
+		urls := []string{}
+		for index, _ := range su {
+			n := (su[index]).(string)
+			c := (clipsURL[index]).(string)
+			c_k := (ck[index]).(string)
+			t := rand.Float64()
+			url := fmt.Sprintf("http://%s/?prot=9&prod=flash&pt=1&file=%s&new=%s&key=%s&vid=%s&uid=%d&t=%f&rb=1", host, c, n, c_k, self.vid, self.CurrentTime()*1000, t)
+			urls = append(urls, self.realUrl(url))
+		}
+		tmp := make(map[string]interface{})
+		tmp["urls"] = urls
+		streamTypes[value] = tmp
 
 	}
 	info.title = title

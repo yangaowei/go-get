@@ -39,6 +39,11 @@ func (self *VideoInfo) Dumps() (info map[string]interface{}) {
 	return
 }
 
+func (self *VideoInfo) DownloadInfo() map[string]interface{} {
+
+	return self.downloadInfo
+}
+
 //实例基类
 type Base struct {
 	Name            string
