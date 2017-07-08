@@ -30,11 +30,15 @@ func UrlSave(vfile, url string) (result string, err error) {
 				result = vfile
 				break
 			} else {
-				log.Println("file size not equal")
+				//log.Println("file size not equal")
+				log.Printf("file size not equal %s,%d,%s ", vfile, fileLength, contentLength)
 			}
 		} else {
 			log.Println("vfile not exists ", vfile)
 		}
+	}
+	if result != vfile {
+		err = errors.New("download video error")
 	}
 	return
 }
@@ -43,16 +47,16 @@ func DownloadUrls(urls []string, ext string, info map[string]string) (vfile stri
 	title := info["title"]
 	vfile = title + "." + ext
 	if len(urls) == 1 {
-		vfile, _ = UrlSave(vfile, urls[0])
+		vfile, err = UrlSave(vfile, urls[0])
 	} else {
 		var vfiles []string
 		for index, url := range urls {
 			f := fmt.Sprintf("%s_%d.%s", title, index, ext)
-			vf, _ := UrlSave(f, url)
-			if len(vf) > 0 {
+			vf, err := UrlSave(f, url)
+			if err == nil {
 				vfiles = append(vfiles, vf)
 			} else {
-				panic(fmt.Sprintf("download %s fail", f))
+				err = errors.New(fmt.Sprintf("download %s fail", f))
 			}
 		}
 		if len(vfiles) == len(urls) {

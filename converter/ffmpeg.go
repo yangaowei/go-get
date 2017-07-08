@@ -31,7 +31,6 @@ func (self *FFMpeg) which(name string) (filepath string) {
 		if strings.Index(value, "PATH=") != 0 {
 			continue
 		}
-		log.Println()
 		paths := strings.Split(value[5:], ":")
 		//log.Println(paths)
 		for _, p := range paths {
