@@ -3,7 +3,7 @@ package converter
 import (
 	"../utils"
 	"fmt"
-	"log"
+	//"log"
 	"os"
 	"path"
 	"strings"

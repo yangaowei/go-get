@@ -5,7 +5,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	simplejson "github.com/bitly/go-simplejson"
 	"log"
-	"strings"
+	//"strings"
 	"time"
 )
 
@@ -14,6 +14,7 @@ type VideoInfo struct {
 	url          string                 `json:"url"`
 	duration     int64                  `json:"duration"`
 	downloadInfo map[string]interface{} `json:"downloadInfo"`
+	createTime   int64                  `json:"createTime"`
 }
 
 type Core interface {
@@ -29,7 +30,10 @@ func (self *VideoInfo) dumps() (info map[string]interface{}) {
 	info["url"] = self.url
 	info["duration"] = self.duration
 	info["downloadInfo"] = self.downloadInfo
-
+	if self.createTime == 0 {
+		self.createTime = utils.GetCurrentMilliseconds()
+	}
+	info["createTime"] = self.createTime
 	return info
 }
 
@@ -98,12 +102,17 @@ func init() {
 	IQiyiRegister()
 	SohuRegister()
 	LeTvRegister()
+	BiLiBiLiRegister()
 }
 
-func GetExtractor(url string) (extractor Core) {
+func GetExtractor(url string) (key string, spider Core) {
 	log.Println(url)
-	if strings.Contains(url, "youku") {
-		return Spiders["youku"]
+	for a, b := range Spiders {
+		if b.MatchUrl(url) {
+			key = a
+			spider = b
+			break
+		}
 	}
-	return nil
+	return
 }

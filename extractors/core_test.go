@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"testing"
 )
@@ -57,7 +58,7 @@ func TestIqiyiGetVideoInfo(t *testing.T) {
 			log.Println(key, down)
 			urls := (down["urls"]).([]string)
 			log.Println(key, len(urls))
-			info := map[string]string{"title": fmt.Sprintf("%s_%s", videoInfo.title, key)}
+			info := map[string]interface{}{"title": fmt.Sprintf("%s_%s", videoInfo.title, key)}
 			result, err := download.DownloadUrls(urls, "mp4", info)
 			log.Println(result, err)
 		}
@@ -82,7 +83,7 @@ func TestIqSohuGetVideoInfo(t *testing.T) {
 			log.Println(key, down)
 			urls := (down["urls"]).([]string)
 			log.Println(key, len(urls))
-			info := map[string]string{"title": fmt.Sprintf("%s_%s", "sohu", key)}
+			info := map[string]interface{}{"title": fmt.Sprintf("%s_%s", "sohu", key)}
 			result, err := download.DownloadUrls(urls, "mp4", info)
 
 			fmt.Println(result, err)
@@ -108,6 +109,38 @@ func TestIqLeTvGetVideoInfo(t *testing.T) {
 
 	} else {
 		log.Println(err)
+	}
+}
+
+func TestBiLiGetVideoInfo(t *testing.T) {
+	//YouKuRegister()
+	//url := "http://www.bilibili.com/video/av12112835/"
+	url := "http://bangumi.bilibili.com/anime/5832/play#100379"
+	key, ie := GetExtractor(url)
+	log.Println("get ie:", ie, key)
+	if ie != nil {
+		if videoInfo, err := ie.GetVideoInfo(url); err == nil {
+			for key, value := range videoInfo.downloadInfo {
+				if key != "hd2" {
+					continue
+				}
+				down := (value).(map[string]interface{})
+				log.Println(key, down)
+				urls := (down["urls"]).([]string)
+				log.Println(key, len(urls))
+				info := map[string]interface{}{"title": fmt.Sprintf("%s_%s", "bilibili", key)}
+				header := make(http.Header)
+				header.Add("Referer", url)
+				info["header"] = header
+				result, err := download.DownloadUrls(urls, "mp4", info)
+
+				fmt.Println(result, err)
+				break
+			}
+
+		} else {
+			log.Println(err)
+		}
 	}
 }
 

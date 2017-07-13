@@ -11,7 +11,7 @@ import (
 )
 
 func GetHtml(req surfer.Request) (resp string, err error) {
-	logs.Log.Debug("get html from url %s", req.GetUrl())
+	logs.Log.Debug("get html from url %s,proxy %s", req.GetUrl(), req.GetProxy())
 	down := surfer.New()
 	if response, e := down.Download(req); e == nil {
 		defer response.Body.Close()
@@ -27,6 +27,9 @@ func GetHtml(req surfer.Request) (resp string, err error) {
 
 func GetContent(url string, data map[string]interface{}) (resp string, err error) {
 	request := &surfer.DefaultRequest{Url: url, TryTimes: 3}
+	if value, ok := data["proxy"]; ok {
+		request.Proxy = value.(string)
+	}
 	request.GetUrl()
 	return GetHtml(request)
 }
@@ -34,6 +37,18 @@ func GetContent(url string, data map[string]interface{}) (resp string, err error
 func Urlopen(url string) (req surfer.Request, resp *http.Response) {
 	down := surfer.New()
 	request := &surfer.DefaultRequest{Url: url, TryTimes: 1}
+	request.GetUrl()
+	response, e := down.Download(request)
+	if e != nil {
+		return
+	}
+	return request, response
+}
+
+func RequestUrl(url string, header http.Header) (req surfer.Request, resp *http.Response) {
+	down := surfer.New()
+	request := &surfer.DefaultRequest{Url: url, TryTimes: 1}
+	request.Header = header
 	request.GetUrl()
 	response, e := down.Download(request)
 	if e != nil {

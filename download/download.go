@@ -7,11 +7,12 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 )
 
-func UrlSave(vfile, url string) (result string, err error) {
+func UrlSave(vfile, url string, header http.Header) (result string, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("get video info error: ", err) // 这里的err其实就是panic传入的内容，55
@@ -20,7 +21,7 @@ func UrlSave(vfile, url string) (result string, err error) {
 	}()
 	log.Println("downloading ", vfile)
 	for i := 0; i < 3; i++ {
-		_, resp := utils.Urlopen(url)
+		_, resp := utils.RequestUrl(url, header)
 		contentLength, _ := strconv.ParseInt(resp.Header["Content-Length"][0], 10, 64)
 		f, _ := os.Create(vfile)
 		io.Copy(f, resp.Body)
@@ -43,16 +44,20 @@ func UrlSave(vfile, url string) (result string, err error) {
 	return
 }
 
-func DownloadUrls(urls []string, ext string, info map[string]string) (vfile string, err error) {
-	title := info["title"]
+func DownloadUrls(urls []string, ext string, info map[string]interface{}) (vfile string, err error) {
+	title := info["title"].(string)
 	vfile = title + "." + ext
+	var header http.Header
+	if h, ok := info["header"]; ok {
+		header = h.(http.Header)
+	}
 	if len(urls) == 1 {
-		vfile, err = UrlSave(vfile, urls[0])
+		vfile, err = UrlSave(vfile, urls[0], header)
 	} else {
 		var vfiles []string
 		for index, url := range urls {
 			f := fmt.Sprintf("%s_%d.%s", title, index, ext)
-			vf, err := UrlSave(f, url)
+			vf, err := UrlSave(f, url, header)
 			if err == nil {
 				vfiles = append(vfiles, vf)
 			} else {

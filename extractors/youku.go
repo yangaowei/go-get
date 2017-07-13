@@ -88,6 +88,11 @@ func (self *YouKu) GetVideoInfo(url string) (info VideoInfo, err error) {
 				if v, ok := self.Hd[hd]; ok {
 					hd = v
 				}
+
+				if _, ok := stringsHd[hd]; ok {
+					continue
+				}
+
 				tmp["m3u8_url"] = m["m3u8_url"]
 				//duration = (m["milliseconds_video"]).(int64)
 				n := (m["milliseconds_video"]).(json.Number)
