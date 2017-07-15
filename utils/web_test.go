@@ -42,7 +42,7 @@ func TestFindSubAll(t *testing.T) {
 }
 
 func TestR1(t *testing.T) {
-	content := R1("abcddd([0-9]+)", "abcd1234asdfadfdadf123123afaf1212")
+	content := R1("abcddd([0-9]+)", "time: '2017/06/07',")
 	log.Println("TestR1:", content, "len:", len(content))
 }
 

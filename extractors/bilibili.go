@@ -6,7 +6,7 @@ import (
 	"crypto/md5"
 	"encoding/xml"
 	"fmt"
-	//"net/http"
+	"net/http"
 	//"reflect"
 	//"encoding/json"
 	simplejson "github.com/bitly/go-simplejson"
@@ -100,6 +100,8 @@ func (self *BiLiBiLi) GetVideoInfo(url string) (info VideoInfo, err error) {
 		vid, _ = eidInfo.Get("result").Get("currentEpisode").Get("danmaku").String()
 		titles = t
 	}
+	header := make(http.Header)
+	header.Add("Referer", url)
 	tmp := make(map[string]interface{})
 	for key, _ := range self.Hd {
 		signStr := fmt.Sprintf("cid=%s&from=miniplay&player=1&quality=%s%s", vid, key, SECRETKEY_MINILOADER)
@@ -109,7 +111,7 @@ func (self *BiLiBiLi) GetVideoInfo(url string) (info VideoInfo, err error) {
 		apiUrl := fmt.Sprintf("http://interface.bilibili.com/playurl?cid=%s&player=1&quality=%s&from=miniplay&sign=%s", vid, key, sign)
 		apiHtml, _ := utils.GetContent(apiUrl, map[string]interface{}{"proxy": "http://123.59.188.21:8118"})
 		urls, _, _, d, _ := parsePlayUrl(apiHtml)
-		tmp[self.Hd[key]] = map[string]interface{}{"urls": urls}
+		tmp[self.Hd[key]] = map[string]interface{}{"urls": urls, "header": header}
 		duration = d
 	}
 

@@ -146,7 +146,8 @@ func TestBiLiGetVideoInfo(t *testing.T) {
 
 func TestBaseGetVideoInfo(t *testing.T) {
 	var url string
-	url = os.Args[1]
+	//url = "http://bangumi.bilibili.com/anime/5832/play#100379"
+	url = "http://www.toutiao.com/i6428908253530292737/"
 
 	log.Println("url:", url)
 	log.Println(os.Args)
@@ -165,5 +166,6 @@ func TestBaseGetVideoInfo(t *testing.T) {
 	} else {
 		info, _ := spider.GetVideoInfo(url)
 		log.Println(info.Dumps())
+		utils.FJson(info.Dumps())
 	}
 }
