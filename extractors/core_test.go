@@ -148,7 +148,7 @@ func TestBaseGetVideoInfo(t *testing.T) {
 	var url string
 	//url = "http://bangumi.bilibili.com/anime/5832/play#100379"
 	//url = "http://www.toutiao.com/i6428908253530292737/"
-	url = "http://v.pptv.com/show/ibZRJxia6UBEKlI4s.html"
+	url = "http://v.pptv.com/show/s00ysRlic7y2QDnY.html"
 
 	log.Println("url:", url)
 	log.Println(os.Args)

@@ -22,7 +22,7 @@ func videoInfo(c *gin.Context) {
 	url := c.DefaultQuery("url", "mis")
 	if url == "mis" {
 		c.JSON(http.StatusOK, gin.H{
-			"msg": "mis url",
+			"msg": "mis params url",
 		})
 	} else {
 		var key string
