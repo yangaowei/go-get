@@ -30,6 +30,9 @@ func GetContent(url string, data map[string]interface{}) (resp string, err error
 	if value, ok := data["proxy"]; ok {
 		request.Proxy = value.(string)
 	}
+	if header, ok := data["header"]; ok {
+		request.Header = header.(http.Header)
+	}
 	request.GetUrl()
 	return GetHtml(request)
 }

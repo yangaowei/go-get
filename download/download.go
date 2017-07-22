@@ -15,7 +15,7 @@ import (
 func UrlSave(vfile, url string, header http.Header) (result string, err error) {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("get video info error: ", err) // 这里的err其实就是panic传入的内容，55
+			fmt.Println("get video info error: ", err) // 这里的err其实就是panic传入的内容
 		}
 		//resp.Body.close()
 	}()
