@@ -105,6 +105,8 @@ func init() {
 	BiLiBiLiRegister()
 	TouTiaoRegister()
 	PPTVRegister()
+	AcFunRegister()
+	DouBanRegister()
 }
 
 func GetExtractor(url string) (key string, spider Core) {
