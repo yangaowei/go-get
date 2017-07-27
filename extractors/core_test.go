@@ -147,7 +147,9 @@ func TestBiLiGetVideoInfo(t *testing.T) {
 func TestBaseGetVideoInfo(t *testing.T) {
 	var url string
 	//url = "http://bangumi.bilibili.com/anime/5832/play#100379"
-	url = "http://www.toutiao.com/i6445044849379901966/"
+	//url = "http://www.acfun.cn/v/ac3647592"
+	//url = "https://movie.douban.com/trailer/216708/"
+	url = "http://www.pearvideo.com/video_1118731"
 	//url = "http://v.pptv.com/show/s00ysRlic7y2QDnY.html"
 
 	log.Println("url:", url)

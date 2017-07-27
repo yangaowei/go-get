@@ -107,6 +107,7 @@ func init() {
 	PPTVRegister()
 	AcFunRegister()
 	DouBanRegister()
+	PearVideoRegister()
 }
 
 func GetExtractor(url string) (key string, spider Core) {
