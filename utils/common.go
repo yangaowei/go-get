@@ -2,7 +2,10 @@ package utils
 
 import (
 	"bytes"
+	"crypto/md5"
+	"fmt"
 	"log"
+	"math/rand"
 	"os/exec"
 )
 
@@ -18,5 +21,17 @@ func Cmd(cmds string) (result string) {
 		return ""
 	}
 	result = domifstat.String()
+	return
+}
+
+func RandInt(min, max int64) int64 {
+	//rand.Seed(time.Now().UnixNano())
+	return min + rand.Int63n(max-min)
+}
+
+func MD5(s string) (result string) {
+	h := md5.New()
+	h.Write([]byte(s))
+	result = fmt.Sprintf("%x", h.Sum(nil))
 	return
 }
