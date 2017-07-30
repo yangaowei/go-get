@@ -108,6 +108,8 @@ func init() {
 	AcFunRegister()
 	DouBanRegister()
 	PearVideoRegister()
+	YinYueTaiRegister()
+	SinaRegister()
 }
 
 func GetExtractor(url string) (key string, spider Core) {
