@@ -31,6 +31,7 @@ func GetContent(url string, data map[string]interface{}) (resp string, err error
 		request.Proxy = value.(string)
 	}
 	if header, ok := data["header"]; ok {
+		logs.Log.Debug("header %v", data["header"])
 		request.Header = header.(http.Header)
 	}
 	request.GetUrl()
@@ -102,6 +103,12 @@ func FindSubAll(pattern string, content string) (rcontent []string) {
 func FindAll(pattern string, content string) (rcontent []string) {
 	re, _ := regexp.Compile(pattern)
 	rcontent = re.FindAllString(content, 100)
+	return
+}
+
+func Match(pattern string, content string) (b bool) {
+	re, _ := regexp.Compile(pattern)
+	b = re.MatchString(content)
 	return
 }
 
