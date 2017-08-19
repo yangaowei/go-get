@@ -41,13 +41,15 @@ func (self *TouTiao) GetVideoInfo(url string) (info VideoInfo, err error) {
 	var title string
 	var duration int64
 	var createTime int64
+	//logs.Log.Debug("html %s", html)
 	title = utils.R1(`title: \'(.+)\'`, html)
-	self.vid = utils.R1(`videoid\:\'(\w+)\'`, html)
+	self.vid = utils.R1(`video(?:id|Id)\:.?\'(\w+)\'`, html)
+	logs.Log.Debug("vid %s", self.vid)
 	createTimeStr := utils.R1(`time: \'(\d+\/\d+\/\d+)\'`, html)
 	if len(createTimeStr) > 0 {
 		createTime = utils.StringToMilliseconds("2006/01/02", createTimeStr)
 	}
-	logs.Log.Debug("createTime %s", createTime)
+	logs.Log.Debug("createTime %d", createTime)
 	keyUrl := fmt.Sprintf("http://i.snssdk.com/video/urls/1/toutiao/mp4/%s", self.vid)
 	vInfo, _ := self.BuildJson(keyUrl)
 	base64Url, _ := vInfo.Get("data").Get("video_list").Get("video_1").Get("main_url").String()
