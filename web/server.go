@@ -18,7 +18,7 @@ func test(c *gin.Context) {
 }
 
 func videoInfo(c *gin.Context) {
-	c.String(http.StatusOK, "videoInfo")
+	//c.String(http.StatusOK, "videoInfo")
 	url := c.DefaultQuery("url", "mis")
 	if url == "mis" {
 		c.JSON(http.StatusOK, gin.H{
@@ -52,10 +52,11 @@ func videoInfo(c *gin.Context) {
 	}
 }
 
-func Run() {
+func Run(port string) {
 	router := gin.Default()
 	router.GET("/", test)
 	router.GET("/video/info", videoInfo)
 	router.StaticFile("/favicon.ico", "./web/resources/favicon.ico")
-	router.Run(":8001")
+	logs.Log.Debug("start server on port %s", port)
+	router.Run(fmt.Sprintf(":%s", port))
 }
