@@ -5,7 +5,7 @@ import (
 	"../utils"
 	"encoding/json"
 	"fmt"
-	//"net/url"
+	simplejson "github.com/bitly/go-simplejson"
 	// "github.com/PuerkitoBio/goquery"
 	// "strconv"
 )
@@ -52,13 +52,20 @@ func (self *ZuiYou) GetVideoInfo(u string) (info VideoInfo, err error) {
 	html, err := utils.PostContent("http://www.izuiyou.com/api/post/detail", nil, value)
 	var s ZuiYouJson
 	json.Unmarshal([]byte(html), &s)
-	fmt.Println("s:", s)
-
+	//fmt.Println("html:", html)
+	bjson := []byte(html)
 	info.title = s.Data.Post.Content
 	info.duration = s.Data.Post.Videos.Video.Duration
 	info.url = u
+	strJson, _ := simplejson.NewJson(bjson)
+	videos, _ := strJson.Get("data").Get("post").Get("videos").Map()
+	var urls []string
+	for _, value := range videos {
+		item := value.(map[string]interface{})
+		urls = append(urls, item["url"].(string))
+	}
 	tmp := make(map[string]interface{})
-	tmp["normal"] = map[string]interface{}{"urls": []string{s.Data.Post.Videos.Video.Url}}
+	tmp["normal"] = map[string]interface{}{"urls": urls}
 	info.downloadInfo = tmp
 	return
 }

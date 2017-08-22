@@ -11,7 +11,7 @@ import (
 )
 
 func GetHtml(req surfer.Request) (resp string, err error) {
-	logs.Log.Debug("get html from url %s,proxy %s", req.GetUrl(), req.GetProxy())
+	logs.Log.Debug("%s html from url %s,proxy %s", req.GetMethod(), req.GetUrl(), req.GetProxy())
 	down := surfer.New()
 	if response, e := down.Download(req); e == nil {
 		defer response.Body.Close()
@@ -27,6 +27,19 @@ func GetHtml(req surfer.Request) (resp string, err error) {
 
 func GetContent(url string, data map[string]interface{}) (resp string, err error) {
 	request := &surfer.DefaultRequest{Url: url, TryTimes: 3}
+	if value, ok := data["proxy"]; ok {
+		request.Proxy = value.(string)
+	}
+	if header, ok := data["header"]; ok {
+		logs.Log.Debug("header %v", data["header"])
+		request.Header = header.(http.Header)
+	}
+	request.GetUrl()
+	return GetHtml(request)
+}
+
+func PostContent(url string, data map[string]interface{}, body string) (resp string, err error) {
+	request := &surfer.DefaultRequest{Url: url, TryTimes: 3, Method: "POST", PostData: body}
 	if value, ok := data["proxy"]; ok {
 		request.Proxy = value.(string)
 	}
