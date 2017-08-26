@@ -24,7 +24,7 @@ type IQiyi struct {
 func IQiyiRegister() {
 	iqiyi := new(IQiyi)
 	iqiyi.Name = "iqiyi"
-	iqiyi._VIDEO_PATTERNS = []string{`www\.iqiyi\.com/v_(\w+)\.html`}
+	iqiyi._VIDEO_PATTERNS = []string{`www\.iqiyi\.com/(?:v|w)_(\w+)\.html`}
 	Spiders[iqiyi.Name] = iqiyi
 	iqiyi.Hd = make(map[string]string)
 	//{1: 'normal', 2: 'hd1', 3: 'hd2', 4: 'hd3', 5: 'hd4', 96: 'low'}
