@@ -110,6 +110,11 @@ func init() {
 	PearVideoRegister()
 	YinYueTaiRegister()
 	SinaRegister()
+	WeiBoRegister()
+	HuYaRegister()
+	CCTVRegister()
+	Open163Register()
+	ZuiYouRegister()
 }
 
 func GetExtractor(url string) (key string, spider Core) {

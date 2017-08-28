@@ -149,9 +149,16 @@ func TestBaseGetVideoInfo(t *testing.T) {
 	//url = "http://bangumi.bilibili.com/anime/5832/play#100379"
 	//url = "http://www.acfun.cn/v/ac3647592"
 	//url = "https://movie.douban.com/trailer/216708/"
-	url = "http://www.pearvideo.com/video_1118731"
+	//url = "http://www.pearvideo.com/video_1118731"
+	//url = "http://v.yinyuetai.com/video/2915411"
+	//url = "http://video.sina.com.cn/view/251136725.html"
+	//url = "http://weibo.com/tv/v/Fe9rQqvDm"
+	//url = "http://ahuya.duowan.com/play/14149930.html"
 	//url = "http://v.pptv.com/show/s00ysRlic7y2QDnY.html"
-
+	//url = "http://v.youku.com/v_show/id_XMjgyODc0NTU2MA==.html"
+	//url = "http://tv.cctv.com/2017/08/01/VIDEMrHMbFEzlDgOpfxSmScg170801.shtml"
+	//url = "http://open.163.com/movie/2011/2/8/4/M8I5S848I_M8KTEKR84.html"
+	url = "http://www.izuiyou.com/detail/23947751&zy_to=qq&to=qq&share_count=1&abtesting=5a3a4dc0-4234-42f1-a2ef-a388e096b7b2"
 	log.Println("url:", url)
 	log.Println(os.Args)
 	var key string
