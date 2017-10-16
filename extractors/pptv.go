@@ -86,7 +86,7 @@ func (self *PPTV) GetVideoInfo(url string) (info VideoInfo, err error) {
 	if len(vid) == 0 {
 		panic("vid is null")
 	}
-	VideoInfoUrl := fmt.Sprintf("http://web-play.pptv.com/webplay3-0-%s.xml?type=web.fpp&version=4", vid)
+	VideoInfoUrl := fmt.Sprintf("http://web-play.pptv.com/webplay3-0-%s.xml?appplt=flp&appid=pptv.flashplayer.vod&appver=3.4.2.28&type=&version=4", vid)
 	xml, _ := utils.GetContent(VideoInfoUrl, nil)
 	//logs.Log.Debug("XML %s", xml)
 
@@ -104,7 +104,7 @@ func (self *PPTV) GetVideoInfo(url string) (info VideoInfo, err error) {
 				break
 			}
 		}
-		cdnUrlByFormat := "http://%s/%d/%s/0/%s?fpp.ver=1.3.0.19&type=web.fpp&k=%s"
+		cdnUrlByFormat := "http://%s/%d/%s/0/%s?fpp.ver=1.3.0.19&type=&k=%s"
 		var urls []string
 		for _, drag := range xmlResult.Dragdata {
 			if drag.Ft == ft {
