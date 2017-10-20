@@ -20,7 +20,7 @@ type LeTv struct {
 func LeTvRegister() {
 	self := new(LeTv)
 	self.Name = "letv"
-	self._VIDEO_PATTERNS = []string{`www\.le\.com\/ptv\/vplay\/(\d+)\.html`}
+	self._VIDEO_PATTERNS = []string{`www\.(?:le|letv)\.com\/ptv\/vplay\/(\d+)\.html`}
 	Spiders[self.Name] = self
 	self.Hd = make(map[string]string)
 	//'1080p': u'1080p' , '1300': u'超清', '1000': u'高清' , '720p': u'标清', '350': u'流畅'
@@ -113,7 +113,9 @@ func (self *LeTv) GetVideoInfo(url string) (info VideoInfo, err error) {
 	var title string
 	var duration int64
 	title, _ = videoInfo.Get("msgs").Get("playurl").Get("title").String()
-	log.Println()
+	duration = videoInfo.Get("msgs").Get("playurl").Get("duration").MustInt64()
+	// fmt.Println("duration", duration)
+	// fmt.Println("err", err)
 	info.title = title
 	info.url = url
 	info.duration = duration
