@@ -19,7 +19,7 @@ type QQ struct {
 func QQRegister() {
 	qq := new(QQ)
 	qq.Name = "qq"
-	qq._VIDEO_PATTERNS = []string{`v\.qq\.com/page/\w/\w/\w/(\w+)\.html`, `v\.qq\.com/\w/cover/\w{15}/(\w+)\.html`}
+	qq._VIDEO_PATTERNS = []string{`v\.qq\.com/page/\w/\w/\w/(\w+)\.html`, `v\.qq\.com/\w/cover/(\w+)\.html`, `v\.qq\.com/\w/cover/\w{15}/(\w+)\.html`}
 	Spiders[qq.Name] = qq
 	//fmt.Println(youku.Name)
 }
@@ -37,9 +37,11 @@ func (self *QQ) GetVideoInfo(url string) (info VideoInfo, err error) {
 			fmt.Println("get video info error: ", err)
 		}
 	}()
-	vid := utils.R1Of(self._VIDEO_PATTERNS, url)
+	html, _ := utils.GetContent(url, nil)
+	//vid := utils.R1Of([]string{`"vid":"(\w+)",`}, html)
+	vid := "v0568e9mz0s"
 	log.Println("vid: ", vid)
-	api_url := "https://h5vv.video.qq.com/getinfo?callback=&charge=0&vid=" + vid + "&defaultfmt=auto&otype=json&guid=&platform=11001&defnpayver=0&appVer=3.0.16&sdtfrom=v3010&host=m.v.qq.coms&defn=auto&fhdswitch=0&show1080p=0&isHLS=0&fmt=auto&newplatform=11001"
+	api_url := "http://vv.video.qq.com/getinfo?otype=json&appver=3.2.19.333&platform=11&defnpayver=1&vid=" + vid
 	html, gerr := utils.GetContent(api_url, nil)
 	if gerr != nil {
 		return info, gerr
@@ -52,27 +54,53 @@ func (self *QQ) GetVideoInfo(url string) (info VideoInfo, err error) {
 	}
 	vis, _ := videoInfo.Get("vl").Get("vi").Array()
 	vi := vis[0]
-
+	vh, _ := (vi).(map[string]interface{})["vh"].(json.Number).Int64()
 	var title string
 	var duration int64
-	var fn string
-	var fvkey string
+	// var fn string
+	// var fvkey string
+	title = (vi).(map[string]interface{})["ti"].(string)
+	fnPre := (vi).(map[string]interface{})["lnk"].(string)
+	host := (vi).(map[string]interface{})["ul"].(map[string]interface{})["ui"].([]interface{})[0].(map[string]interface{})["url"].(string)
+	streams, _ := videoInfo.Get("fl").Get("fi").Array()
+	seg_cnt, _ := (vi).(map[string]interface{})["cl"].(map[string]interface{})["fc"].(json.Number).Int64()
+	if seg_cnt == 0 {
+		seg_cnt = 1
+	}
 	stringsHd := make(map[string]interface{})
-	if m, ok := (vi).(map[string]interface{}); ok {
-		title = (m["ti"]).(string)
-		fn = (m["fn"]).(string)
-		fvkey = (m["fvkey"]).(string)
-		n := (m["td"]).(string)
-		duration, _ = strconv.ParseInt(utils.R1(`(\d+)\.`, n), 10, 64)
-		ul, _ := json.Marshal(m["ul"])
-		downUrl := utils.R1(`(http.+?)\",`, string(ul))
-		downUrl = downUrl + fn + "?vkey=" + fvkey
+	for _, item := range streams {
+		fi := item.(map[string]interface{})
+		qualityName := fi["name"].(string)
+		qualityId, _ := fi["id"].(json.Number).Int64()
+		//fmt.Println(item)
 		tmp := make(map[string]interface{})
-		urls := []string{downUrl}
-		tmp["urls"] = urls
-		stringsHd["normal"] = tmp
+		var urls []string
+		for i := 1; i <= int(seg_cnt); i++ {
+			var filename string
+			if seg_cnt == 1 && vh <= 480 {
+				filename = fnPre + ".mp4"
+			} else {
+				filename = fmt.Sprintf("%s.p%d.%d.mp4", fnPre, qualityId%10000, i)
+			}
+			keyApi := fmt.Sprintf("http://vv.video.qq.com/getkey?otype=json&platform=11&format=%d&vid=%s&filename=%s&appver=3.2.19.333", qualityId, vid, filename)
+			partInfo, _ := utils.GetContent(keyApi, nil)
+			partInfo = utils.R1("QZOutputJson=(.*)?;", partInfo)
+			bjson := []byte(partInfo)
+			portJson, _ := simplejson.NewJson(bjson)
+			vkey, e := portJson.Get("key").String()
+			if e == nil {
+				downUrl := fmt.Sprintf("%s%s?vkey=%s", host, filename, vkey)
+				urls = append(urls, downUrl)
+			}
+		}
+		if len(urls) > 0 {
+			tmp["urls"] = urls
+			stringsHd[qualityName] = tmp
+		}
 	}
 
+	n := (vi).(map[string]interface{})["td"].(string)
+	duration, _ = strconv.ParseInt(utils.R1(`(\d+)\.`, n), 10, 64)
 	info.title = title
 	info.url = url
 	info.duration = duration
