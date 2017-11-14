@@ -38,8 +38,8 @@ func (self *QQ) GetVideoInfo(url string) (info VideoInfo, err error) {
 		}
 	}()
 	html, _ := utils.GetContent(url, nil)
-	//vid := utils.R1Of([]string{`"vid":"(\w+)",`}, html)
-	vid := "v0568e9mz0s"
+	vid := utils.R1Of([]string{`"vid":"(\w+)",`}, html)
+	//vid := "v0568e9mz0s"
 	log.Println("vid: ", vid)
 	api_url := "http://vv.video.qq.com/getinfo?otype=json&appver=3.2.19.333&platform=11&defnpayver=1&vid=" + vid
 	html, gerr := utils.GetContent(api_url, nil)
