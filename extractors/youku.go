@@ -69,7 +69,7 @@ func (self *YouKu) GetVideoInfo(url string) (info VideoInfo, err error) {
 	header := make(http.Header)
 	header.Add("Referer", "http://v.youku.com")
 	for i := 0; i < 3; i++ {
-		api_url := fmt.Sprintf("https://ups.youku.com/ups/get.json?vid=%s&ccode=%s&client_ip=192.168.1.1&utid=%s&client_ts=%d", self.vid, "0401", fetch_cna(), self.CurrentTime())
+		api_url := fmt.Sprintf("https://ups.youku.com/ups/get.json?vid=%s&ccode=%s&client_ip=192.168.1.1&utid=%s&client_ts=%d", self.vid, "0406", fetch_cna(), self.CurrentTime())
 		data := map[string]interface{}{"header": header}
 		html, gerr := utils.GetContent(api_url, data)
 		if gerr != nil {
