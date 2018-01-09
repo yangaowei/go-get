@@ -82,8 +82,8 @@ func (self *FFMpeg) Merge(videos []string, vfile string, option map[string]inter
 	}
 	for _, video := range videos {
 		ts := fmt.Sprintf("%s.ts", video)
-		params := []string{self.ffmpegPath, "-loglevel", "quiet", "-y", "-i", video, "-c", "copy", "-f", "mpegts", "-bsf:v", "h264_mp4toannexb", ts}
-		utils.Cmd(strings.Join(params, " "))
+		cmdParams := fmt.Sprintf("%s -loglevel quiet -y -i '%s' -c copy -f mpegts -bsf:v h264_mp4toannexb %s", self.ffmpegPath, video, ts)
+		utils.Cmd(cmdParams)
 	}
 	concat := self.ffmpegPath + " -loglevel" + " quiet" + "  -y" + " -i" + ` "concat:`
 	for _, video := range videos {
