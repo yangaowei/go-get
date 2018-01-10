@@ -15,6 +15,7 @@ type VideoInfo struct {
 	duration     int64                  `json:"duration"`
 	downloadInfo map[string]interface{} `json:"downloadInfo"`
 	createTime   int64                  `json:"createTime"`
+	site         string                 `json:"site"`
 }
 
 type Core interface {
@@ -41,6 +42,11 @@ func (self *VideoInfo) Dumps() (info map[string]interface{}) {
 	info = self.dumps()
 	info["desc"] = "normal 表示标清，hd1 表示高清，hd2 表示超清，hd3 表示720p hd4 表示1080p"
 	return
+}
+
+func (self *VideoInfo) Urls(hd string) []string {
+
+	return self.downloadInfo[hd].(map[string]interface{})["urls"].([]string)
 }
 
 func (self *VideoInfo) DownloadInfo() map[string]interface{} {
