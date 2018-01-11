@@ -10,7 +10,7 @@ import (
 )
 
 func Cmd(cmds string) (result string) {
-	log.Println("run cmd:", cmds)
+	//log.Println("run cmd:", cmds)
 	var cmd *exec.Cmd
 	cmd = exec.Command("/bin/sh", "-c", cmds)
 	var domifstat bytes.Buffer
