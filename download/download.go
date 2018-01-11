@@ -5,11 +5,13 @@ import (
 	"../utils"
 	"errors"
 	"fmt"
+	"github.com/cnych/starjazz/mathx"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func UrlSave(vfile, url string, header http.Header) (result string, err error) {
@@ -19,7 +21,7 @@ func UrlSave(vfile, url string, header http.Header) (result string, err error) {
 		}
 		//resp.Body.close()
 	}()
-	log.Println("downloading ", vfile)
+	//log.Println("downloading ", vfile)
 	for i := 0; i < 3; i++ {
 		_, resp := utils.RequestUrl(url, header)
 		contentLength, _ := strconv.ParseInt(resp.Header["Content-Length"][0], 10, 64)
@@ -46,7 +48,7 @@ func UrlSave(vfile, url string, header http.Header) (result string, err error) {
 
 func DownloadUrls(urls []string, ext string, info map[string]interface{}) (vfile string, err error) {
 	title := info["title"].(string)
-	vfile = title + "." + ext
+	vfile = "output" + "." + ext
 	var header http.Header
 	if h, ok := info["header"]; ok {
 		header = h.(http.Header)
@@ -56,7 +58,7 @@ func DownloadUrls(urls []string, ext string, info map[string]interface{}) (vfile
 	} else {
 		var vfiles []string
 		for index, url := range urls {
-			f := fmt.Sprintf("%s_%d.%s", title, index, ext)
+			f := fmt.Sprintf("%s_%d.%s", "output", index, ext)
 			vf, err := UrlSave(f, url, header)
 			if err == nil {
 				vfiles = append(vfiles, vf)
@@ -75,10 +77,44 @@ func DownloadUrls(urls []string, ext string, info map[string]interface{}) (vfile
 			if !result {
 				err = errors.New("Merge videos error")
 			}
-			for _, vfile := range vfiles {
-				os.Remove(vfile)
+			for _, v := range vfiles {
+				os.Remove(v)
 			}
 		}
 	}
+	os.Rename(vfile, fmt.Sprintf("%s.%s", title, ext))
 	return
+}
+
+func UrlSize(urls []string, header http.Header) (size int64) {
+	for _, url := range urls {
+		_, resp := utils.RequestUrl(url, header)
+		contentLength, _ := strconv.ParseInt(resp.Header["Content-Length"][0], 10, 64)
+		size += contentLength
+	}
+	return
+}
+
+func Download(urls []string, ext string, info map[string]interface{}) error {
+	title := info["title"].(string)
+	fmt.Printf("\n")
+	fmt.Printf("site:				%v\n", info["site"])
+	fmt.Printf("title:				%s\n", title)
+	fmt.Printf("type:				%v\n", info["type"])
+	fmt.Printf("urls:				%v\n", len(urls))
+	var header http.Header
+	if h, ok := info["header"]; ok {
+		header = h.(http.Header)
+	}
+	size := UrlSize(urls, header)
+	s := fmt.Sprintf("%.2f MiB (%d bytes)", mathx.Round(float64(size)/1024/1024, 2), size)
+	fmt.Printf("size:				%v\n", s)
+	fmt.Printf("Downloading %s ...\n", title)
+	start := time.Now().Unix()
+	DownloadUrls(urls, ext, info)
+	end := time.Now().Unix()
+	cost := end - start
+	fmt.Printf("Saving Me at the %s ...Done.Cost %vs\n", title, cost)
+	fmt.Printf("\n")
+	return nil
 }
