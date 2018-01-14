@@ -25,7 +25,7 @@ func (bar *NBar) Start() {
 		for {
 			if bar.Size < bar.Total {
 				bar.Resize(bar)
-				time.Sleep(1 * time.Second)
+				time.Sleep(100 * time.Millisecond)
 			} else {
 				bar.finish = true
 				return
@@ -37,13 +37,13 @@ func (bar *NBar) Start() {
 func (bar *NBar) Finish() {
 	for !bar.finish {
 		bar.print()
-		time.Sleep(1 * time.Second)
+		time.Sleep(100 * time.Millisecond)
 	}
 	bar.print()
 }
 
 func (bar *NBar) cost() string {
-	s := fmt.Sprintf("%ds", time.Now().Second()-bar.start.Second())
+	s := fmt.Sprintf("cost:%ds", time.Now().Second()-bar.start.Second())
 	return s
 }
 
@@ -61,6 +61,6 @@ func (bar *NBar) print() {
 		}
 	}
 	//str = "[" + str + "] " + strconv.Itoa(count) + "%" + "  "
-	str = fmt.Sprintf("[%s] %s%  cost %s", str, strconv.Itoa(count), bar.cost())
+	str = fmt.Sprintf("[%s] %s%% %s", str, strconv.Itoa(count), bar.cost())
 	fmt.Printf("\r%s", str)
 }
