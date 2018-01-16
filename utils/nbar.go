@@ -2,25 +2,26 @@ package utils
 
 import (
 	"fmt"
+	"github.com/cnych/starjazz/mathx"
 	"strconv"
 	"time"
 )
 
 type NBar struct {
-	Total  int
-	Size   int
+	Total  int64
+	Size   int64
 	finish bool
-	start  time.Time
+	start  int64
 	//end    time.Time
 	Resize func(bar *NBar) error
 }
 
-func NewBar(Total int) *NBar {
-	return &NBar{Total: Total, Size: 0}
+func NewBar(Total int64) *NBar {
+	return &NBar{Total: Total}
 }
 
 func (bar *NBar) Start() {
-	bar.start = time.Now()
+	bar.start = time.Now().Unix()
 	go func() {
 		for {
 			if bar.Size < bar.Total {
@@ -43,24 +44,32 @@ func (bar *NBar) Finish() {
 }
 
 func (bar *NBar) cost() string {
-	s := fmt.Sprintf("cost:%ds", time.Now().Second()-bar.start.Second())
+	s := fmt.Sprintf(" %ds", time.Now().Unix()-bar.start)
+	return s
+}
+
+func formatSize(size int64) string {
+	s := fmt.Sprintf("%.2f MiB", mathx.Round(float64(size)/1024/1024, 2))
 	return s
 }
 
 func (bar *NBar) print() {
 	str := ""
-	size := 100
+	var size int64
+	size = 100
 	//fmt.Println(bar.Size)
 	count := bar.Size * size / bar.Total
 	//fmt.Println(count)
-	for i := 0; i < size; i++ {
+	for i := int64(0); i < size; i++ {
 		if i < count {
 			str += "="
+		} else if i == count {
+			str += ">"
 		} else {
 			str += "_"
 		}
 	}
 	//str = "[" + str + "] " + strconv.Itoa(count) + "%" + "  "
-	str = fmt.Sprintf("[%s] %s%% %s", str, strconv.Itoa(count), bar.cost())
+	str = fmt.Sprintf("%s/%s [%s] %s%% %s", formatSize(bar.Size), formatSize(bar.Total), str, strconv.FormatInt(count, 10), bar.cost())
 	fmt.Printf("\r%s", str)
 }
