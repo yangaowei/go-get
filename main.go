@@ -49,7 +49,7 @@ func main() {
 				for _, hd := range []string{"hd3", "hd2", "hd1", "normal"} {
 					if _, ok := dowloadInfo[hd]; ok {
 						urls := i.Urls(hd)
-						logs.Log.Warning("urls %v", urls)
+						//logs.Log.Warning("urls %v", urls)
 						info["type"] = hd
 						download.Download(urls, "mp4", info)
 						break
