@@ -93,7 +93,7 @@ func (self *FFMpeg) Merge(videos []string, vfile string, option map[string]inter
 	concat = concat[:len(concat)-1]
 	concat += `"` + " -bsf:a aac_adtstoasc"
 	concat += " " + strings.Join(self.parseOptions(option), " ") + " "
-	concat += vfile
+	concat += `'` + vfile + `'`
 	//log.Println(concat)
 	utils.Cmd(concat)
 	result = true
