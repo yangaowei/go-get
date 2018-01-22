@@ -10,14 +10,14 @@ import (
 type NBar struct {
 	Total  int64
 	Size   int64
-	finish bool
+	finish chan bool
 	start  int64
 	//end    time.Time
 	Resize func(bar *NBar) error
 }
 
 func NewBar(Total int64) *NBar {
-	return &NBar{Total: Total}
+	return &NBar{Total: Total, finish: make(chan bool, 1)}
 }
 
 func (bar *NBar) Start() {
@@ -28,7 +28,7 @@ func (bar *NBar) Start() {
 				bar.Resize(bar)
 				time.Sleep(100 * time.Millisecond)
 			} else {
-				bar.finish = true
+				bar.finish <- true
 				return
 			}
 		}
@@ -36,10 +36,16 @@ func (bar *NBar) Start() {
 }
 
 func (bar *NBar) Finish() {
-	for !bar.finish {
-		bar.print()
-		time.Sleep(100 * time.Millisecond)
+	t := time.Tick(100 * time.Millisecond)
+	for {
+		select {
+		case <-bar.finish:
+			goto ForEnd
+		case <-t:
+			bar.print()
+		}
 	}
+ForEnd:
 	bar.print()
 }
 
