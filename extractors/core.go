@@ -124,7 +124,7 @@ func init() {
 }
 
 func GetExtractor(url string) (key string, spider Core) {
-	log.Println(url)
+	//log.Println(url)
 	for a, b := range Spiders {
 		if b.MatchUrl(url) {
 			key = a

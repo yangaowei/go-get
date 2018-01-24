@@ -27,7 +27,7 @@ type (
 		Status() (int, string)
 		DelLogger(adaptername string) error
 		SetLogger(adaptername string, config map[string]interface{}) error
-
+		SetLevel(l int)
 		// 以下打印方法除正常log输出外，若为客户端或服务端模式还将进行socket信息发送
 		Debug(format string, v ...interface{})
 		Informational(format string, v ...interface{})

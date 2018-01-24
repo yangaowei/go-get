@@ -4,6 +4,9 @@
 ```console  
 1，在项目根目录下执行 go run main.py -p=api -port=8002 (prot默认参数为8002)
 2，请求格式：IP:8002/video/info?url=http://v.youku.com/v_show/id_XMjgyODc0NTU2MA==.html
+
+返回数据格式：
+
 {
     "createTime": 1516670558949,
     "desc": "normal 表示标清，hd1 表示高清，hd2 表示超清，hd3 表示720p hd4 表示1080p",
@@ -22,8 +25,11 @@
     "duration": 63,
     "title": "萌娃边哭边演出 网友: 差个敬业奖",
     "url": "http://v.youku.com/v_show/id_XMzM0MDY3MDk5Mg==.html"
-}      
+}   
+
+备注：有些站点解析出的下载地址，会增加一些header的认证，如果需要，回把header数据一并返回，下载时只需加上返回的header即可   
 ```    
+
 ### 2，本地下载模式
 
 ```console  
@@ -35,7 +41,7 @@ type:               hd2
 urls:               19
 size:               814.13 MiB (853675175 bytes)
 Downloading 朴志浩视角 韩服 VS 国服 4V4 刘勇赫朴敏秀朴志浩KoguryoTeam SSS张博麟涛XX 20170614 A ...
-814.13 MiB/814.13 MiB [====================================================================================================] 100%  24s
+814.13 MiB/814.13 MiB [=======================================================================] 100%  24s
 Saving Me at the 朴志浩视角 韩服 VS 国服 4V4 刘勇赫朴敏秀朴志浩KoguryoTeam SSS张博麟涛XX 20170614 A ...Done.
 Merge Video at the 朴志浩视角 韩服 VS 国服 4V4 刘勇赫朴敏秀朴志浩KoguryoTeam SSS张博麟涛XX 20170614 A ...Done.
 ```
