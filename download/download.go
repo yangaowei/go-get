@@ -130,7 +130,7 @@ func Download(urls []string, ext string, info map[string]interface{}) error {
 	//DownloadUrls(urls, ext, info)
 	var vfiles []string
 	bar := utils.NewBar(size)
-	bar.Start()
+	//bar.Start()
 	bar.Resize = func(bar *utils.NBar) error {
 		var size int64
 		for _, f := range vfiles {

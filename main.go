@@ -8,6 +8,7 @@ import (
 	"./web"
 	//"encoding/json"
 	"flag"
+	//"fmt"
 )
 
 var (
@@ -33,7 +34,7 @@ func main() {
 	if debug {
 		logs.Log.SetLevel(8)
 	} else {
-		logs.Log.SetLevel(7)
+		logs.Log.SetLevel(8)
 	}
 	logs.Log.Debug("pattern: %s", pattern)
 	if pattern == "api" {

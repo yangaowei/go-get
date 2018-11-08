@@ -2,7 +2,7 @@
 
 ### 1，API接口形式提供解析服务
 ```console  
-1，在项目根目录下执行 go run main.py -p=api -port=8002 (prot默认参数为8002)
+1，在项目根目录下执行 go run main.go -p=api -port=8002 (prot默认参数为8002)
 2，请求格式：IP:8002/video/info?url=http://v.youku.com/v_show/id_XMjgyODc0NTU2MA==.html
 
 返回数据格式：
@@ -33,7 +33,7 @@
 ### 2，本地下载模式
 
 ```console  
-$go run main.py http://v.youku.com/v_show/id_XMjgyODc0NTU2MA==.html
+$go run main.go http://v.youku.com/v_show/id_XMjgyODc0NTU2MA==.html
         
 site:               youku
 title:              朴志浩视角 韩服 VS 国服 4V4 刘勇赫朴敏秀朴志浩KoguryoTeam SSS张博麟涛XX 20170614 A

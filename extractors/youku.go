@@ -38,14 +38,16 @@ func YouKuRegister() {
 }
 
 func fetch_cna() (cna string) {
-	url := "http://gm.mmstat.com/yt/ykcomment.play.commentInit?cna="
+	//url := "http://gm.mmstat.com/yt/ykcomment.play.commentInit?cna="
+	url := "http://log.mmstat.com/eg.js"
 	_, resp := utils.Urlopen(url)
 	cookies := resp.Header["Set-Cookie"]
 	cna = utils.R1("cna=([^;]+)", strings.Join(cookies, ";"))
 	if len(cna) == 0 {
-		cna = "oqikEO1b7CECAbfBdNNf1PM1"
+		cna = "DOG4EdW4qzsCAbZyXbU+t7Jt"
 	}
 	// //return cna if cna else "oqikEO1b7CECAbfBdNNf1PM1"
+	fmt.Print(cna)
 	return
 }
 
@@ -66,10 +68,11 @@ func (self *YouKu) GetVideoInfo(url string) (info VideoInfo, err error) {
 	//log.Println("vid:", vid)
 	self.vid = vid
 	//cna := fetch_cna()
+	ckey := "DIl58SLFxFNndSV1GFNnMQVYkx1PP5tKe1siZu/86PR1u/Wh1Ptd+WOZsHHWxysSfAOhNJpdVWsdVJNsfJ8Sxd8WKVvNfAS8aS8fAOzYARzPyPc3JvtnPHjTdKfESTdnuTW6ZPvk2pNDh4uFzotgdMEFkzQ5wZVXl2Pf1/Y6hLK0OnCNxBj3+nb0v72gZ6b0td+WOZsHHWxysSo/0y9D2K42SaB8Y/+aD2K42SaB8Y/+ahU+WOZsHcrxysooUeND"
 	header := make(http.Header)
 	header.Add("Referer", "http://v.youku.com")
 	for i := 0; i < 3; i++ {
-		api_url := fmt.Sprintf("https://ups.youku.com/ups/get.json?vid=%s&ccode=%s&client_ip=192.168.1.1&utid=%s&client_ts=%d", self.vid, "0508", fetch_cna(), self.CurrentTime())
+		api_url := fmt.Sprintf("https://ups.youku.com/ups/get.json?vid=%s&ccode=%s&client_ip=192.168.1.1&utid=%s&client_ts=%d&client_ip=192.168.1.1&ckey=%s", self.vid, "0516", fetch_cna(), self.CurrentTime(), ckey)
 		data := map[string]interface{}{"header": header}
 		html, gerr := utils.GetContent(api_url, data)
 		if gerr != nil {
